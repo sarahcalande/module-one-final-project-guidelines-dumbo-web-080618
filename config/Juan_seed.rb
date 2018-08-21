@@ -13,3 +13,9 @@ latin = Activity.create(name:"Dancing", place:"Bembe", genre: "Latin", price: 30
 mumble_rap = Activity.create(name:"Dancing", place:"40/40 Club", genre: "Mumble Rap", price: 50, time:2200, date: ["Friday,Saturday"])
 salsa = Activity.create(name:"Dancing", place:"Club Cache", genre: "Salsa", price: 40, time:2200, date: ["Friday,Saturday"])
 mixture = Activity.create(name:"Dancing", place:"Output", genre: "Everything", price: 50, time:2000, date: ["Friday,Saturday"])
+
+
+# Public Events
+
+outdoor_movie = Activity.create(name:"Public Events", place:"Bryant Park", genre: "Outdoor Movie", price: 0, time:1800, date: "Mondays")
+vinyl_nights = Activity.create(name:"Public Events", place:"Outside of Madison Square Garden", genre: "Get together", price: 0, time:1930, date: "Thursday")
