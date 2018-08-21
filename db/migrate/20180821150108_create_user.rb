@@ -3,6 +3,7 @@ class CreateUser < ActiveRecord::Migration[5.0]
     create_table :users do |t|
       t.string :name
       t.integer :max_price_range
+      t.string :email
     end
   end
 end
