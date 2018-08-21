@@ -5,7 +5,7 @@ class CreateActivities < ActiveRecord::Migration[5.0]
       t.string :place
       t.string :type
       t.integer :price
-      t.integer :time
+      t.integer :time 
     end
   end
 end
