@@ -99,34 +99,34 @@ def signup
       exit
     end
   end
-  def update(user)
-    i = TTY::Prompt.new.select("Would you like to:") do |y|
-    y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
-    end
-
-    case i
-    when "email"
-      puts "What would you like to change your email to?"
-        new_email = gets.chomp.downcase
-        user.update(email: new_email)
-      puts "Email updated!"
-        update(user)
-    when "name"
-      puts "What would you like to change your name to?"
-        new_name = gets.chomp.downcase
-        user.update(name: new_name)
-        puts "Name updated!"
-          update(user)
-    when "delete"
-      puts "You sure you want to delete your profile?"
-        t = TTY::Prompt.new.select("Would you like to:") do |y|
-          y.choices "Yes" => "Yes", "No" => "No"
-        end
-
-        case t
-        when "Yes"
-          user.destroy
-          puts "Hope to see you again!"
+  # def update(user)
+  #   i = TTY::Prompt.new.select("Would you like to:") do |y|
+  #   y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
+  #   end
+  #
+  #   case i
+  #   when "email"
+  #     puts "What would you like to change your email to?"
+  #       new_email = gets.chomp.downcase
+  #       user.update(email: new_email)
+  #     puts "Email updated!"
+  #       update(user)
+  #   when "name"
+  #     puts "What would you like to change your name to?"
+  #       new_name = gets.chomp.downcase
+  #       user.update(name: new_name)
+  #       puts "Name updated!"
+  #         update(user)
+  #   when "delete"
+  #     puts "You sure you want to delete your profile?"
+  #       t = TTY::Prompt.new.select("Would you like to:") do |y|
+  #         y.choices "Yes" => "Yes", "No" => "No"
+  #       end
+  #
+  #       case t
+  #       when "Yes"
+  #         user.destroy
+  #         puts "Hope to see you again!"
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
