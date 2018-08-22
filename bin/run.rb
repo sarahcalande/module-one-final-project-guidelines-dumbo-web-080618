@@ -102,9 +102,26 @@ def signup
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
-    #binding.pry
-    ###############             do you want delete/add/exit?    ##########################
+    puts "Do you want to delete anything from your activity list?"
+      response = gets.chomp.downcase
+      if response.include?("yes")
+        puts "Okay, what would you like to delete?"
+          var = gets.chomp.capitalize
+          delete(user)
+      elsif "Would you like to add any events?"
+        response_two = gets.chomp
+        if response_two.include("yes")
+          add(user)
+        elsif response_two.include?("no")
+          puts "Thank you for using! Have a great day!"
+          exit
+        else puts "huh?"
+          saved_activities(user)
+      end
+    end
   end
+
+  
 
   def add(user)
     i = TTY::Prompt.new.select("#{user.name}, what kind of activity are you in the mood for?") do |y|
@@ -127,9 +144,23 @@ def signup
     options = []
     selected_act.each {|act| options.push({name: "Place: #{act.place} Price: #{act.price}", value: act})}
     var = prompt.select("You picked", options)
-    
+
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
+    puts "Activity saved in your profile! Do you want to look for more events?"
+      response = gets.chomp.downcase
+        if response.include?("yes")
+          add(user)
+        elsif response.include?("no")
+          puts "Would you like to view your saved events?"
+            response_two = gets.chomp.downcase
+            if response_two.include?("yes")
+              saved_activities(user)
+            elsif response_two.include?("no")
+              puts "Thank you for using! Have a great day!"
+              exit
+            end
+        end
 
 
     ############### puts "activity saved. what do you wanan do ?"  #########################
