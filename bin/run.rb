@@ -71,18 +71,22 @@ end
   def signup
     puts "Please enter your full name"
     name = gets.strip.downcase
-    puts "Please enter a max price range you're willing to spend on an activity.(If you don't want to specify please enter 0)"
-    price_range = gets.strip
     puts "Please enter an Email Address"
     email_address = gets.strip.downcase
     new_user = nil
       if User.find_by(email:email_address) == nil
-        new_user = User.create(name:name, max_price_range:price_range, email:email_address)
-        puts "Welcome #{new_user.name} to Heard From a Friend."
-        #
+        new_user = User.create(name:name,email:email_address)
       else
-        puts "Sorry, that email address is already in use with another account."
-        signup
+        puts "Sorry, that email address is already in use with another account. Type T to try again or L to login or enter any key to exit"
+        response = gets.chomp.downcase
+        if response == "t"
+          signup
+        elsif response == "l"
+          existing
+        else
+          exit
+        end
+
       end
       main(new_user)
   end
@@ -126,7 +130,7 @@ end
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
-    pry
+    binding.pry
   end
 
   def search_n_save(user)
@@ -147,7 +151,7 @@ end
     # selected_act.map {|info| TTY::Prompt.new.select("Where would you like to go?", %w(Place:"#{info.place}" Price:"#{info.price}"))}
     prompt = TTY::Prompt.new
     options = []
-    selected_act.each {|act| options.push({name: "#{act.place} - #{act.price}", value: act})}
+    selected_act.each {|act| options.push({name: "Place: #{act.place} Price: #{act.price}", value: act})}
     var = prompt.select("You picked", options)
     puts `clear`
     v = SavedActivity.(user_id:user.id, activity_id:var.id)
@@ -169,4 +173,5 @@ end
   #   y.choices "": select_act[0].place, , "New Member" => "signup", Exit: "exit"
 
 # find_by_response("Concert",sara)
-greeting
+email =  "juan.castillo@gmail.com"
+email.valid?
