@@ -24,18 +24,24 @@
 
 
 def greeting
-  prompt = TTY::Prompt.new.yes?("Welcome to Heard From a Friend, do you have a profile?")
+  prompt = TTY::Prompt.new.select("Welcome to Heard From a Friend.") do |y|
+    y.choices Exisiting: "existing", "New Member" => "signup", Exit: "exit"
+  end
+
+  case prompt
+
+  when "existing"
+    existing
+
+  when "signup"
+    signup
+
+  when "exit"
+    puts "Enjoy your day!"
+    exit
+  end 
 
 
-    if prompt == true
-      puts "good"
-      #What is your email?
-    elsif prompt == false
-      puts "bad"
-      #Create User instance
-    elsif prompt != true && prompt !=  false
-      puts "ok"
-    end
 
 end
 
@@ -43,5 +49,4 @@ end
 #
 #   prompt.yes?("Do you have a profile?")
 # end
-
 greeting
