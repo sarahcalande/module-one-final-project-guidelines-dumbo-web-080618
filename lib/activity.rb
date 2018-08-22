@@ -1,4 +1,4 @@
 class Activity < ActiveRecord::Base
-  has_many :user_selections
-  has_many :users, through: :user_selections
+  has_many :saved_activities
+  has_many :users, through: :saved_activities
 end

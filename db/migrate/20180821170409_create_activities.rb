@@ -3,9 +3,10 @@ class CreateActivities < ActiveRecord::Migration[5.0]
     create_table :activities do |t|
       t.string :name
       t.string :place
-      t.string :type
+      t.string :genre
       t.integer :price
-      t.integer :time
+      t.integer :best_time
+      t.string :date
     end
   end
 end
