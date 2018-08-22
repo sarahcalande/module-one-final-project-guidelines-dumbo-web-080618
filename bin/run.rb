@@ -68,12 +68,15 @@ def signup
 
     puts "Please enter your email address"
     email_address = gets.chomp.downcase
+<<<<<<< HEAD
       if email_address == "exit"
         puts "Thank you for using Heard From a Friend, have a nice day."
         exit
       end
 
 
+=======
+>>>>>>> 19071fcdc17a74de0f2cb336588b642de640bdeb
     if !User.find_by(email:email_address)
       i = TTY::Prompt.new.select("Sorry, we can't seem to find the email address you entered. Would you like to:") do |y|
         y.choices "Try again?" => "existing", "Make a new account?" => "signup", Exit: "exit"
@@ -112,6 +115,7 @@ def signup
       exit
     end
   end
+<<<<<<< HEAD
   def update(user)
     i = TTY::Prompt.new.select("Would you like to:") do |y|
     y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
@@ -153,6 +157,36 @@ def signup
   end
 end
 
+=======
+  # def update(user)
+  #   i = TTY::Prompt.new.select("Would you like to:") do |y|
+  #   y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
+  #   end
+  #
+  #   case i
+  #   when "email"
+  #     puts "What would you like to change your email to?"
+  #       new_email = gets.chomp.downcase
+  #       user.update(email: new_email)
+  #     puts "Email updated!"
+  #       update(user)
+  #   when "name"
+  #     puts "What would you like to change your name to?"
+  #       new_name = gets.chomp.downcase
+  #       user.update(name: new_name)
+  #       puts "Name updated!"
+  #         update(user)
+  #   when "delete"
+  #     puts "You sure you want to delete your profile?"
+  #       t = TTY::Prompt.new.select("Would you like to:") do |y|
+  #         y.choices "Yes" => "Yes", "No" => "No"
+  #       end
+  #
+  #       case t
+  #       when "Yes"
+  #         user.destroy
+  #         puts "Hope to see you again!"
+>>>>>>> 19071fcdc17a74de0f2cb336588b642de640bdeb
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
@@ -181,7 +215,10 @@ end
       exit
     end
   end
+<<<<<<< HEAD
 
+=======
+>>>>>>> 19071fcdc17a74de0f2cb336588b642de640bdeb
   def delete(user)
     puts "What is the name of the event you would like to delete"
     name = gets.chomp.capitalize
@@ -231,6 +268,7 @@ end
     end
   end
 
+<<<<<<< HEAD
 
 ##############################   NEEDS SOME FRONT END WORK   #################################
   def saved_activities(user)
@@ -258,6 +296,8 @@ end
 
 
 
+=======
+>>>>>>> 19071fcdc17a74de0f2cb336588b642de640bdeb
   def add(user)
     i = TTY::Prompt.new.select("#{user.name}, what kind of activity are you in the mood for?") do |y|
       y.choices Concert: "Concert", Sports: "Sports", Dancing: "Dancing", Bar: "Bar", Museum: "Museum", Park:"Park", "Public Event" => "Public Event"
@@ -294,7 +334,10 @@ end
 
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 19071fcdc17a74de0f2cb336588b642de640bdeb
     puts "Activity saved in your profile! Do you want to look for more events?"
       response = gets.chomp.downcase
         if response.include?("yes")
