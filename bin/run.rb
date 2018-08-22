@@ -60,7 +60,7 @@ def signup
   def existing
 
     puts "Please enter your email address"
-    email_address = gets.chomp
+    email_address = gets.chomp.downcase
     if !User.find_by(email:email_address)
       i = TTY::Prompt.new.select("Sorry, we can't seem to find the email address you entered. Would you like to:") do |y|
         y.choices "Try again?" => "existing", "Make a new account?" => "signup", Exit: "exit"
@@ -98,17 +98,14 @@ def signup
     end
   end
 
-
-
-
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
     puts "Do you want to delete anything from your activity list?"
       response = gets.chomp.downcase
+      binding.pry
       if response.include?("yes")
         puts "Okay, what would you like to delete?"
-          var = gets.chomp.capitalize
           delete(user)
       elsif "Would you like to add any events?"
         response_two = gets.chomp
@@ -120,6 +117,55 @@ def signup
         else puts "huh?"
           saved_activities(user)
       end
+    end
+  end
+
+  def delete(user)
+    puts "What is the name of the event you would like to delete"
+    name = gets.chomp.capitalize
+    info = SavedActivity.find_by(user_id: user.id)
+  end
+
+
+  def update(user)
+    i = TTY::Prompt.new.select("Would you like to:") do |y|
+    y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
+    end
+
+    case i
+    when "email"
+      puts "What would you like to change your email to?"
+        new_email = gets.chomp.downcase
+        user.update(email: new_email)
+      puts "Email updated!"
+        update(user)
+    when "name"
+      puts "What would you like to change your name to?"
+        new_name = gets.chomp.downcase
+        user.update(name: new_name)
+        puts "Name updated!"
+          update(user)
+    when "delete"
+      puts "You sure you want to delete your profile?"
+        t = TTY::Prompt.new.select("Would you like to:") do |y|
+          y.choices "Yes" => "Yes", "No" => "No"
+        end
+
+        case t
+        when "Yes"
+          user.destroy
+          puts "Hope to see you again!"
+          exit
+        when "No"
+          puts "We were afraid we almost lost you there."
+          main(user)
+        end
+
+    when "main page"
+      main(user)
+    when "exit"
+      puts "Thank you for using, have a nice day."
+      exit
     end
   end
 
@@ -163,9 +209,6 @@ def signup
               exit
             end
         end
-
-
-    ############### puts "activity saved. what do you wanan do ?"  #########################
   end
 
 greeting
