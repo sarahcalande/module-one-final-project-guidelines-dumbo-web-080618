@@ -65,4 +65,4 @@ eben = User.create(name: "Eben", max_price_range: 30, email: "Eben.W@hotmail")
 
 act_1 = SavedActivity.create(user_id:3, activity_id:7)
 act_2 = SavedActivity.create(user_id:3, activity_id:4)
-act_3 = SavedActivity.create(user_id:3, activity_id:9)
+act_3 = SavedActivity.create(user_id:3, activity_id:7)
