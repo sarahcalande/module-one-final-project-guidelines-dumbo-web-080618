@@ -99,6 +99,8 @@ def signup
   end
 
 
+
+
   def saved_activities(user)
     all = user.activities
     g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
@@ -121,7 +123,7 @@ def signup
     end
   end
 
-  
+
 
   def add(user)
     i = TTY::Prompt.new.select("#{user.name}, what kind of activity are you in the mood for?") do |y|
