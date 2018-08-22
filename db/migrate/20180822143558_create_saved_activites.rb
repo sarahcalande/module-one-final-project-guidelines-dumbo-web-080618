@@ -1,6 +1,6 @@
-class CreateUserSelection < ActiveRecord::Migration[5.0]
+class CreateSavedActivites < ActiveRecord::Migration[5.0]
   def change
-    create_table :user_selections do |t|
+    create_table :saved_activities do |t|
       t.integer :user_id
       t.integer :activity_id
       t.string :name
