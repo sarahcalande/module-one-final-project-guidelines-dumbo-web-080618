@@ -22,45 +22,57 @@ def greeting
 end
 
 def signup
+
   puts "Please enter your full name"
   name = gets.strip.downcase
     if name == "exit"
       puts "Thank you for using Heard From a Friend, have a nice day."
       exit
+    elsif name == "back"
+      greeting
+
     end
+
   puts "Please enter an Email Address"
   email_address = gets.strip.downcase
     if email_address == "exit"
       puts "Thank you for using Heard From a Friend, have a nice day."
       exit
+    elsif name == "back"
+      greeting
     end
 
   new_user = nil
     if User.find_by(email: email_address) == nil
         new_user = User.create(name:name, email:email_address)
-        ################## figure out if they want to try the same email again/ try signing in ##################
-      else
-        i = TTY::Prompt.new.select("Sorry, that email address is already in use with another account. Would you like to:") do |y|
+
+    else
+      i = TTY::Prompt.new.select("Sorry, that email address is already in use with another account. Would you like to:") do |y|
           y.choices "Sign in with existing account?": "existing", "Make a new account?" => "signup", Exit: "exit"
         end
 
-          case i
-          when "existing"
-            existing
-          when "signup"
-            signup
-          when "exit"
-            puts "Thank you for using, have a nice day."
-            exit
-          end
-      end
-      main(new_user)
+        case i
+        when "existing"
+          existing
+        when "signup"
+          signup
+        when "exit"
+          puts "Thank you for using, have a nice day."
+          exit
+        end
+    end
+    main(new_user)
   end
 
   def existing
 
     puts "Please enter your email address"
     email_address = gets.chomp
+      if email_address == "exit"
+        puts "Thank you for using Heard From a Friend, have a nice day."
+        exit
+      end
+
     if !User.find_by(email:email_address)
       i = TTY::Prompt.new.select("Sorry, we can't seem to find the email address you entered. Would you like to:") do |y|
         y.choices "Try again?" => "existing", "Make a new account?" => "signup", Exit: "exit"
@@ -142,12 +154,31 @@ def signup
     end
   end
 
+
+##############################   NEEDS SOME FRONT END WORK   #################################
   def saved_activities(user)
     all = user.activities
-    g = all.map {|act| puts "#{act.place}, #{act.price}, #{act.genre}"}
-    #binding.pry
-    ###############             do you want delete/add/exit?    ##########################
+    g = all.map {|act| puts "Place: #{act.place}, Price: $#{act.price}, Genre: #{act.genre}"}
+    puts "Would you like to delete any events?"
+      response = gets.chomp
+        if response.include?("yes")
+          delete(user, g)
+        elsif response.include("no")
+          i = TTY::Prompt.new.select ("Great, wanna update anything else on your profile or look for a new event?") do |y| y.choices "Look for new Events" => "new events", "Update Profile" => "update", Exit: "exit"
+          end
+            case i
+            when "new events"
+              add(user)
+            when "update"
+              update(user)
+            when "exit"
+              puts "Thank you for using! Have a great day!"
+              exit
+            end
+        end
   end
+
+
 
   def add(user)
     i = TTY::Prompt.new.select("#{user.name}, what kind of activity are you in the mood for?") do |y|
@@ -162,20 +193,33 @@ def signup
 
     puts "How much would you like to spend?"
     number = gets.chomp.to_i
-    ####### tty prompt to be able to  give the user a choice to either put in a price range or not ######
-
     puts `clear`
+    selected_act = nil
+
     selected_act = Activity.select{|info|info.name == name && info.price <= number}
+
+    if selected_act.length == 0
+      puts "Sorry, nothing in your price range? Want to try again?"
+        response = gets.chomp
+        if response.include?("yes")
+          find_by_response(name, user)
+        elsif response.include?("no")
+          puts "get more money"
+            add(user)
+        end
+    else
     prompt = TTY::Prompt.new
     options = []
-    selected_act.each {|act| options.push({name: "Place: #{act.place} Price: #{act.price}", value: act})}
-    binding.pry
+    selected_act.each {|act| options.push({name: "Place: #{act.place}, Price: $#{act.price}, Genre: #{act.genre}", value: act})}
+
     var = prompt.select("You picked", options)
 
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
 
+    main(user)
 
+    end
     ############### puts "activity saved. what do you wanan do ?"  #########################
   end
 
