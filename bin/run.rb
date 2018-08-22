@@ -84,7 +84,7 @@ def signup
   def main(current_user)
     puts "Welcome #{current_user.name}"
     i = TTY::Prompt.new.select("Would you like to:") do |y|
-      y.choices "See your saved activities?" => "saved_activities", "look for something new to do?" => "add activities", Exit: "exit"
+      y.choices "See your saved activities?" => "saved_activities", "Look for something new to do?" => "add activities", "Update your profile" => "update", Exit: "exit"
     end
 
     case i
@@ -92,12 +92,56 @@ def signup
       saved_activities(current_user)
     when "add activities"
       add(current_user)
+    when "update"
+      update(current_user)
     when "exit"
       puts "Thank you for using, have a nice day."
       exit
     end
   end
 
+  def update(user)
+    i = TTY::Prompt.new.select("Would you like to:") do |y|
+    y.choices "Update your Email?" => "email", "Update your name?" => "name", "Delete profile" => "delete", "Return to the main page?" => "main page", Exit: "exit"
+    end
+
+    case i
+    when "email"
+      puts "What would you like to change your email to?"
+        new_email = gets.chomp.downcase
+        user.update(email: new_email)
+      puts "Email updated!"
+        update(user)
+    when "name"
+      puts "What would you like to change your name to?"
+        new_name = gets.chomp.downcase
+        user.update(name: new_name)
+        puts "Name updated!"
+          update(user)
+    when "delete"
+      puts "You sure you want to delete your profile?"
+        t = TTY::Prompt.new.select("Would you like to:") do |y|
+          y.choices "Yes" => "Yes", "No" => "No"
+        end
+
+        case t
+        when "Yes"
+          user.destroy
+          puts "Hope to see you again!"
+          exit
+        when "No"
+          puts "We were afraid we almost lost you there."
+          main(user)
+        end
+
+
+    when "main page"
+      main(user)
+    when "exit"
+      puts "Thank you for using, have a nice day."
+      exit
+    end
+  end
 
   def saved_activities(user)
     all = user.activities
@@ -126,8 +170,9 @@ def signup
     prompt = TTY::Prompt.new
     options = []
     selected_act.each {|act| options.push({name: "Place: #{act.place} Price: #{act.price}", value: act})}
+    binding.pry
     var = prompt.select("You picked", options)
-    
+
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
 
