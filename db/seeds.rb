@@ -59,9 +59,9 @@ freeconcert= Activity.create(name:"Public Event", place: "Central Park",genre: "
 outdoor_movie = Activity.create(name:"Public Events", place:"Bryant Park", genre: "Outdoor Movie", price: 0, best_time:1800, date: "Mondays")
 vinyl_nights = Activity.create(name:"Public Events", place:"Outside of Madison Square Garden", genre: "Get together", price: 0, best_time:1930, date: "Thursday")
 
-sara = User.create(name: "Sara", max_price_range: 20, email: "Sarah.C@hotmail")
-juan = User.create(name: "Juan", max_price_range: 40, email: "Juan.C@hotmail")
-eben = User.create(name: "Eben", max_price_range: 30, email: "Eben.W@hotmail")
+sara = User.create(name: "Sara",  email: "Sarah.C@hotmail")
+juan = User.create(name: "Juan",  email: "Juan.C@hotmail")
+eben = User.create(name: "Eben",  email: "Eben.W@hotmail")
 
 act_1 = SavedActivity.create(user_id:3, activity_id:7)
 act_2 = SavedActivity.create(user_id:3, activity_id:4)
