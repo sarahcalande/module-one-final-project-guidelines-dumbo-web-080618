@@ -152,9 +152,12 @@ def signup
     user_a.each {|act| options.push({name:"Place:#{act.place}, Price:#{act.price}, Genre:#{act.genre}", value: act})}
     var = prompt.select("You choose to delete", options)
     #
-    puts "Are you sure you want to delete this activity?"
-    response = gets.chomp.downcase
-    if response.include?("yes")
+
+    i = TTY::Prompt.new.select("Are you sure you want to delete this activity?") do |y|
+      y.choices Yes: "yes", No: "no"
+    end
+    case i
+    when "yes"
       #binding.pry
       del = SavedActivity.where(user_id:user.id, activity_id:var.id).destroy_all
       #binding.pry
@@ -162,12 +165,9 @@ def signup
       user.activities
       saved_activities(user)
       # SavedActivity.delete
-    elsif response.include?("no")
+    when "no"
       puts "That's ok, we all make mistakes."
       saved_activities(user)
-    elsif
-      !(response.include?("yes")) && !(response.include?("no"))
-      puts "Invalid selection"
     end
 
   end
@@ -253,21 +253,20 @@ def signup
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
     # g = Activity.find(var.id)
-    user.activities
+    user.reload
 
-    puts "Activity saved in your profile! Do you want to look for more events?"
-      response = gets.chomp.downcase
-        if response.include?("yes")
+    i = TTY::Prompt.new.select("Activity saved in your profile! Do you want to:") do |y|
+      y.choices "Look for more events?" => "events", "See saved activities?" => "saved_events", "Log out?" => "exit"
+    end
+
+        case i
+        when "events"
           add(user)
-        elsif response.include?("no")
-          puts "Would you like to view your saved events?"
-            response_two = gets.chomp.downcase
-            if response_two.include?("yes")
-              saved_activities(user)
-            elsif response_two.include?("no")
-              puts "Thank you for using! Have a great day!"
-              exit
-            end
+        when "saved_events"
+          saved_activities(user)
+        when "exit"
+          puts "Come back soon!"
+          exit
         end
       end
   end
