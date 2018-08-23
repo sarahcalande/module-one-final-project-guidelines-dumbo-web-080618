@@ -82,7 +82,7 @@ def signup
   end
 
   def main(user)
-    puts "Welcome #{user.name}"
+    puts "Welcome #{user.name.capitalize}"
     i = TTY::Prompt.new.select("Would you like to:") do |y|
       y.choices "See your saved activities?" => "saved_activities", "Look for something new to do?" => "add activities", "Update your profile." => "update", Exit: "exit"
       #=================================MAYBE WE CAN CHANGE SAVED ACTIVITIES TO  "WOULD YOU LIKE TO SEE YOUR HISTORY " AS AN OPTION ==================================================
@@ -104,16 +104,17 @@ def signup
   def saved_activities(user)
     all = user.activities
     results = []
-    if results.length == 0
+    #binding.pry
+    if all.length == 0
       puts "Nothing in your saved activities, do you want to search for some?"
-        response = gets.chomp
-        if response.include?("yes")
+        yo= gets.chomp
+        if yo.include?("yes")
         add(user)
-      elsif response.include?("no")
+      elsif yo.include?("no")
         ##################### NEEDS TO BE WORKED OUT #####################
         puts "Thanks for using! Have a great day."
         exit
-      end 
+      end
     else
     g = all.each_with_index { |act, i| results.push(puts " #{i + 1}. Place: #{act.place},  Price :#{act.price},  Genre:#{act.genre}")}
     #binding.pry
@@ -154,8 +155,8 @@ def signup
     if response.include?("yes")
       #binding.pry
       del = SavedActivity.where(user_id:user.id, activity_id:var.id).destroy_all
-      binding.pry
-      user.activities = user.activities.select {|act| act.id != del.id}
+      #binding.pry
+      user.activities = user.activities.select {|act| act.id != var.id}
       saved_activities(user)
       # SavedActivity.delete
     elsif response.include?("no")
@@ -225,10 +226,21 @@ def signup
 
     puts "How much would you like to spend?"
     number = gets.chomp.to_i
+
     ####### tty prompt to be able to  give the user a choice to either put in a price range or not ######
 
     puts `clear`
     selected_act = Activity.select{|info|info.name == name && info.price <= number}
+    if selected_act.length == 0
+      puts "Sorry, there was nothing in that price range. Want to try again?"
+      response = gets.chomp
+      if response.include?("yes")
+        find_by_response(name, user)
+      elsif response.include?("no")
+        puts “get more money”
+          add(user)
+      end
+  else
     prompt = TTY::Prompt.new
     options = []
       ##################### How do we make it into a table??? ####################
@@ -237,7 +249,9 @@ def signup
 
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
-    user.activites << v
+    g = Activity.find(var.id)
+    user.activities
+
     puts "Activity saved in your profile! Do you want to look for more events?"
       response = gets.chomp.downcase
         if response.include?("yes")
@@ -252,6 +266,7 @@ def signup
               exit
             end
         end
+      end
   end
 
 greeting
