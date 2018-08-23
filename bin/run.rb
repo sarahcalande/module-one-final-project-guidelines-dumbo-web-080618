@@ -76,32 +76,45 @@ def signup
           exit
         end
     else
-      current_user = User.find_by(email:email_address)
-      main(current_user)
+      user = User.find_by(email:email_address)
+      main(user)
     end
   end
 
-  def main(current_user)
-    puts "Welcome #{current_user.name}"
+  def main(user)
+    puts "Welcome #{user.name}"
     i = TTY::Prompt.new.select("Would you like to:") do |y|
-      y.choices "See your saved activities?" => "saved_activities", "look for something new to do?" => "add activities", Exit: "exit"
+      y.choices "See your saved activities?" => "saved_activities", "Look for something new to do?" => "add activities", "Update your profile." => "update", Exit: "exit"
       #=================================MAYBE WE CAN CHANGE SAVED ACTIVITIES TO  "WOULD YOU LIKE TO SEE YOUR HISTORY " AS AN OPTION ==================================================
     end
 
     case i
     when "saved_activities"
-      saved_activities(current_user)
+      saved_activities(user)
     when "add activities"
-      add(current_user)
+      add(user)
     when "exit"
       puts "Thank you for using Heard From a Friend, have a nice day."
       exit
+    when "update"
+      update(user)
     end
   end
 
   def saved_activities(user)
     all = user.activities
     results = []
+    if results.length == 0
+      puts "Nothing in your saved activities, do you want to search for some?"
+        response = gets.chomp
+        if response.include?("yes")
+        add(user)
+      elsif response.include?("no")
+        ##################### NEEDS TO BE WORKED OUT #####################
+        puts "Thanks for using! Have a great day."
+        exit
+      end 
+    else
     g = all.each_with_index { |act, i| results.push(puts " #{i + 1}. Place: #{act.place},  Price :#{act.price},  Genre:#{act.genre}")}
     #binding.pry
     puts "Do you want to delete anything from your activity list?"
@@ -111,16 +124,23 @@ def signup
       elsif response.include?("no")
             puts "Would you like to add any events?"
               response_two = gets.chomp
-              if response_two.include("yes")
+              if response_two.include?("yes")
                 add(user)
               elsif response_two.include?("no")
-                puts "Thank you for using! Have a great day!"
-                exit
-              else puts "huh?"
-                saved_activities(user)
+                i = TTY::Prompt.new.select("Would you like to:") do |y|
+                  y.choices "Go back to your saved activites?" => "saved_activities", "Exit?" => "exit"
+                end
+                case i
+                when "saved_activities"
+                  saved_activities(user)
+                when "exit"
+                  puts "Thank you so much for using Heard from a Friend. Have a nice day!"
+                  exit
+                end
             end
           end
         end
+      end
 
   def delete(user)
     user_a= user.activities
@@ -134,6 +154,8 @@ def signup
     if response.include?("yes")
       #binding.pry
       del = SavedActivity.where(user_id:user.id, activity_id:var.id).destroy_all
+      binding.pry
+      user.activities = user.activities.select {|act| act.id != del.id}
       saved_activities(user)
       # SavedActivity.delete
     elsif response.include?("no")
@@ -174,8 +196,7 @@ def signup
         case t
         when "Yes"
           user.destroy
-          puts "Hope to see you again!"
-          exit
+          greeting
         when "No"
           puts "We were afraid we almost lost you there."
           main(user)
@@ -210,11 +231,13 @@ def signup
     selected_act = Activity.select{|info|info.name == name && info.price <= number}
     prompt = TTY::Prompt.new
     options = []
-    selected_act.each {|act| options.push({name: "Place: #{act.place} Price: #{act.price}", value: act})}
-    var = prompt.select("You picked", options)
+      ##################### How do we make it into a table??? ####################
+    selected_act.each {|act| options.push({name: "Place: #{act.place}, Price: #{act.price}, Type: #{act.genre}, Best Time to Go: #{act.best_time}", value: act})}
+    var = prompt.select("Here are your options:", options)
 
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
+    user.activites << v
     puts "Activity saved in your profile! Do you want to look for more events?"
       response = gets.chomp.downcase
         if response.include?("yes")
