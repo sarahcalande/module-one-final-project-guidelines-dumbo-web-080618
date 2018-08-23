@@ -102,6 +102,7 @@ def signup
   end
 
   def saved_activities(user)
+    user.reload
     all = user.activities
     results = []
     #binding.pry
@@ -144,6 +145,7 @@ def signup
       end
 
   def delete(user)
+    user.reload
     user_a= user.activities
     prompt = TTY::Prompt.new
     options = []
@@ -157,6 +159,7 @@ def signup
       del = SavedActivity.where(user_id:user.id, activity_id:var.id).destroy_all
       #binding.pry
       user.activities = user.activities.select {|act| act.id != var.id}
+      user.activities
       saved_activities(user)
       # SavedActivity.delete
     elsif response.include?("no")
@@ -249,7 +252,7 @@ def signup
 
     puts `clear`
     v = SavedActivity.create(user_id:user.id, activity_id:var.id)
-    g = Activity.find(var.id)
+    # g = Activity.find(var.id)
     user.activities
 
     puts "Activity saved in your profile! Do you want to look for more events?"
